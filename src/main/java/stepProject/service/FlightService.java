@@ -1,11 +1,14 @@
 package stepProject.service;
 
-import stepProject.entity.BookingEntity;
+
+
+import stepProject.model.entity.BookingEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public class FlightService implements Service{
+
     @Override
     public void saveAll(BookingEntity bookingEntity) {
 
