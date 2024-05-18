@@ -1,4 +1,4 @@
-package stepProject;
+package stepProject.dao;
 
 public interface Dao {
 }
