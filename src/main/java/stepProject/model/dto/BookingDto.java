@@ -8,14 +8,24 @@ public class BookingDto {
     private Long bookingId;
     private String passengerName;
     private LocalDate bookingDate;
+    private Long flightNumber;
 
-    public BookingDto(Long bookingId, String passengerName, LocalDate bookingDate) {
+    public BookingDto(Long bookingId, String passengerName, LocalDate bookingDate, Long flightNumber) {
         this.bookingId = bookingId;
         this.passengerName = passengerName;
         this.bookingDate = bookingDate;
+        this.flightNumber = flightNumber;
     }
 
     public BookingDto() {
+    }
+
+    public Long getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(Long flightNumber) {
+        this.flightNumber = flightNumber;
     }
 
     public Long getBookingId() {
@@ -53,5 +63,15 @@ public class BookingDto {
     @Override
     public int hashCode() {
         return Objects.hash(bookingId, passengerName, bookingDate);
+    }
+
+    @Override
+    public String toString() {
+        return "BookingDto{" +
+                "bookingId=" + bookingId +
+                ", passengerName='" + passengerName + '\'' +
+                ", bookingDate=" + bookingDate +
+                ", flightNumber=" + flightNumber +
+                '}';
     }
 }

@@ -9,12 +9,14 @@ public class BookingEntity {
     private String passengerName;
     private LocalDate bookingDate;
     private Long flightNumber;
+    private static long BOOKING_COUNT = 0;
 
-    public BookingEntity(Long bookingId, String passengerName, LocalDate bookingDate, Long flightNumber) {
-        this.bookingId = bookingId;
+    public BookingEntity(String passengerName, LocalDate bookingDate, Long flightNumber) {
+        this.bookingId = ++BOOKING_COUNT;
         this.passengerName = passengerName;
         this.bookingDate = bookingDate;
         this.flightNumber = flightNumber;
+
     }
 
     public Long getBookingId() {
@@ -52,6 +54,10 @@ public class BookingEntity {
     public BookingEntity() {
     }
 
+    public static long getBOOKING_COUNT() {
+        return BOOKING_COUNT;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -63,5 +69,15 @@ public class BookingEntity {
     @Override
     public int hashCode() {
         return Objects.hash(bookingId, passengerName, bookingDate, flightNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "BookingEntity{" +
+                "bookingId=" + bookingId +
+                ", passengerName='" + passengerName + '\'' +
+                ", bookingDate=" + bookingDate +
+                ", flightNumber=" + flightNumber +
+                '}';
     }
 }
