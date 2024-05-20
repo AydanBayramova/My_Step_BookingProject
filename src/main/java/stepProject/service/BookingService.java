@@ -1,6 +1,8 @@
 package stepProject.service;
 
 import stepProject.dao.Dao;
+import stepProject.exception.BookingException;
+import stepProject.model.dto.BookingDto;
 import stepProject.model.entity.BookingEntity;
 
 import java.util.List;
@@ -8,30 +10,58 @@ import java.util.Optional;
 
 
 public class BookingService implements Service {
-  private final Dao dao;
 
-    public BookingService(Dao dao) {
-        this.dao = dao;
+    private final Dao<BookingEntity> bookingEntityDao;
+
+    public BookingService(Dao<BookingEntity> bookingEntityDao) {
+        this.bookingEntityDao = bookingEntityDao;
+    }
+
+    private BookingEntity maptoBookingEntity(BookingDto bookingDto) {
+        BookingEntity bookingEntity = new BookingEntity();
+        bookingEntity.setBookingId(bookingDto.getBookingId());
+        bookingEntity.setBookingDate(bookingDto.getBookingDate());
+        bookingEntity.setPassengerName(bookingDto.getPassengerName());
+        bookingEntity.setFlightNumber(bookingDto.getFlightNumber());
+        return bookingEntity;
     }
 
 
     @Override
-    public void saveAll(BookingEntity bookingEntity) {
-
+    public BookingEntity saveAll(BookingDto bookingDto) {
+        if (bookingDto != null) {
+            BookingEntity bookingEntity = maptoBookingEntity(bookingDto);
+            return bookingEntityDao.saveAll(bookingEntity);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public List<BookingEntity> getAll() {
-        return List.of();
+        if (bookingEntityDao.getAll() == null) {
+            throw new BookingException("No BookingEntity found");
+        } else {
+            return bookingEntityDao.getAll();
+        }
     }
 
     @Override
-    public Optional<BookingEntity> getById(int id) {
-        return Optional.empty();
+    public Optional<BookingEntity> getById(Long id) {
+        if (bookingEntityDao.getById(id).isPresent()) {
+            return bookingEntityDao.getById(id);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean deleteById(int id) {
-        return false;
+    public boolean deleteById(Long id) {
+        if (bookingEntityDao.getById(id).isPresent()) {
+            return bookingEntityDao.deleteById(id);
+        } else {
+            return false;
+        }
+
     }
 }
