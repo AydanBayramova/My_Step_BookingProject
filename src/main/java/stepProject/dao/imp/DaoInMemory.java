@@ -11,9 +11,7 @@ public class DaoInMemory implements Dao<BookingEntity> {
 
     @Override
     public BookingEntity saveAll(BookingEntity bookingEntity) {
-        System.out.println(BOOKING_ENTITY_SET);
         BOOKING_ENTITY_SET.add(bookingEntity);
-        System.out.println(BOOKING_ENTITY_SET);
         return bookingEntity;
     }
 
@@ -24,18 +22,25 @@ public class DaoInMemory implements Dao<BookingEntity> {
 
 
     @Override
-    public Optional<BookingEntity> getById(int id) {
+    public Optional<BookingEntity> getById(Long id) {
         return BOOKING_ENTITY_SET.stream()
-                .filter(bookingEntity -> bookingEntity.getBookingId() == id)
+                .filter(bookingEntity -> Objects.equals(bookingEntity.getBookingId(), id))
                 .findFirst()
                 .map(Optional::of)
                 .orElse(Optional.empty());
     }
 
     @Override
-    public boolean deleteById(int id) {
-        return BOOKING_ENTITY_SET.stream()
-                .toList().removeIf(bookingEntity -> bookingEntity.getBookingId() == id);
-
+    public boolean deleteById(Long id) {
+        Iterator<BookingEntity> iterator = BOOKING_ENTITY_SET.iterator();
+        while (iterator.hasNext()) {
+            BookingEntity bookingEntity = iterator.next();
+            if (Objects.equals(bookingEntity.getBookingId(), id)) {
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
     }
+
 }
