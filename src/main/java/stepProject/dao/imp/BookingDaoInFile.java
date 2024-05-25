@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import stepProject.dao.Dao;
 import stepProject.exception.BookingException;
 import stepProject.model.entity.BookingEntity;
+import stepProject.model.entity.FlightEntity;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ public class BookingDaoInFile implements Dao<BookingEntity> {
                 .findFirst();
     }
 
-    @Override
     public boolean deleteById(Long id) {
         List<BookingEntity> bookings = getAll();
         Optional<BookingEntity> bookingToDelete = bookings.stream()
@@ -65,10 +65,16 @@ public class BookingDaoInFile implements Dao<BookingEntity> {
         if (bookingToDelete.isPresent()) {
             bookings.remove(bookingToDelete.get());
             saveAllToFile(bookings);
+            decreaseFreeSeats();
             return true;
         }
         return false;
     }
+
+    private void decreaseFreeSeats() {
+        FlightEntity.decreaseFreeSeats();
+    }
+
 
     private void saveAllToFile(List<BookingEntity> bookings) {
         try (Writer writer = new FileWriter(BOOKINGS_PATH)) {
