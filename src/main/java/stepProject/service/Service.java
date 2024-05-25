@@ -9,9 +9,9 @@ public interface Service<T> {
 
 
 
-    BookingEntity saveAll(BookingDto o);
+   T  saveAll(T o);
 
-    List<BookingEntity> getAll();
-    Optional<BookingEntity> getById(Long id);
+    List<T> getAll();
+    Optional<T> getById(Long id);
     boolean deleteById(Long id);
 }
