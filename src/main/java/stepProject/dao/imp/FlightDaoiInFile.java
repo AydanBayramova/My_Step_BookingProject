@@ -7,11 +7,13 @@ import stepProject.exception.BookingException;
 import stepProject.exception.FlightException;
 import stepProject.model.entity.BookingEntity;
 import stepProject.model.entity.FlightEntity;
-
+import java.time.LocalDateTime;
 import java.io.*;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FlightDaoiInFile implements Dao<FlightEntity> {
 
@@ -24,19 +26,28 @@ public class FlightDaoiInFile implements Dao<FlightEntity> {
         this.objectMapper = objectMapper;
     }
 
+
     @Override
-    public FlightEntity saveAll(FlightEntity flightEntity) {
+    public List<FlightEntity> saveAll(FlightEntity flightEntity) {
+        List<FlightEntity> allFlights = getAll();
+        allFlights.add(flightEntity);
+
+        String flightsJson;
+        try {
+            flightsJson = objectMapper.writeValueAsString(allFlights);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BookingException("Error converting flight entities to JSON.");
+        }
 
         try (FileWriter fileWriter = new FileWriter(FLIGHT_PATH, true);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            String bookingJson = objectMapper.writeValueAsString(flightEntity);
-            printWriter.println(bookingJson);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+            bufferedWriter.write(flightsJson);
         } catch (IOException e) {
             e.printStackTrace();
             throw new BookingException("Error saving booking entity.");
         }
-        return flightEntity;
+        return (List<FlightEntity>) flightEntity;
     }
 
     @Override
@@ -63,16 +74,26 @@ public class FlightDaoiInFile implements Dao<FlightEntity> {
     @Override
     public boolean deleteById(Long id) {
         List<FlightEntity> flights = getAll();
-        Optional<FlightEntity> bookingToDelete = flights.stream()
+        Optional<FlightEntity> flightToDelete = flights.stream()
                 .filter(flightEntity -> id.equals(flightEntity.getFlightId()))
                 .findFirst();
-        if (bookingToDelete.isPresent()) {
-            flights.remove(bookingToDelete.get());
+        if (flightToDelete.isPresent()) {
+            flights.remove(flightToDelete.get());
             saveAllToFile(flights);
             return true;
         }
         return false;
     }
+    public List<FlightEntity> getFlightsFromKievInNext24Hours() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime next24Hours = now.plusHours(24);
+          return getAll().stream()
+                  .filter(flight->"Kiev".equalsIgnoreCase(flight.getLocations())&&
+                          flight.getDepartureDate().isAfter(ChronoLocalDate.from(now))&&
+                          flight.getDepartureDate().isBefore(ChronoLocalDate.from(next24Hours)))
+                  .collect(Collectors.toList());
+    }
+
 
     private void saveAllToFile(List<FlightEntity> flights) {
         try (Writer writer = new FileWriter(FLIGHT_PATH)) {

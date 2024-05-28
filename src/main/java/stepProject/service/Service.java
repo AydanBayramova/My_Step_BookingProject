@@ -9,7 +9,7 @@ public interface Service<T> {
 
 
 
-   T  saveAll(T o);
+   List<T>  saveAll(T o);
 
     List<T> getAll();
     Optional<T> getById(Long id);

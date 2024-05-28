@@ -3,21 +3,32 @@ package stepProject.model.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class FlightEntity {
+public class FlightDto {
 
     private Long flightId;
     private String locations;
     private LocalDate departureDate;
     private Long freeSeats;
+    private String departureCity;
 
-    public FlightEntity(Long flightId, String locations, LocalDate departureDate, Long freeSeats) {
+    public FlightDto(final Long flightId, final String locations, final LocalDate departureDate, final Long freeSeats, final String departureCity) {
         this.flightId = flightId;
         this.locations = locations;
         this.departureDate = departureDate;
         this.freeSeats = freeSeats;
+        this.departureCity = departureCity;
     }
 
-    public FlightEntity() {
+
+    public FlightDto() {
+    }
+
+    public String getDepartureCity() {
+        return this.departureCity;
+    }
+
+    public void setDepartureCity(final String departureCity) {
+        this.departureCity = departureCity;
     }
 
     public Long getFlightId() {
@@ -56,7 +67,7 @@ public class FlightEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FlightEntity that = (FlightEntity) o;
+        FlightDto that = (FlightDto) o;
         return Objects.equals(flightId, that.flightId) && Objects.equals(locations, that.locations) && Objects.equals(departureDate, that.departureDate) && Objects.equals(freeSeats, that.freeSeats);
     }
 

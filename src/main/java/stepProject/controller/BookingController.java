@@ -19,7 +19,7 @@ public class BookingController {
 
     public BookingDto addBooking(BookingDto bookingDto) {
         if (bookingDto.getBookingId() > 0) {
-            BookingEntity bookingEntity = bookingService.saveAll(bookingDto);
+            BookingEntity bookingEntity = (BookingEntity) bookingService.saveAll(bookingDto);
             return mapToDto(bookingEntity);
         } else {
             throw new BookingException("Booking id can't be empty");

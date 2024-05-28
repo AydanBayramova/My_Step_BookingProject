@@ -23,8 +23,9 @@ public class BookingDaoInFile implements Dao<BookingEntity> {
         this.objectMapper = objectMapper;
     }
 
+
     @Override
-    public BookingEntity saveAll(BookingEntity bookingEntity) {
+    public List<BookingEntity> saveAll(BookingEntity bookingEntity) {
         try (FileWriter fileWriter = new FileWriter(BOOKINGS_PATH, true);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
              PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
@@ -34,7 +35,7 @@ public class BookingDaoInFile implements Dao<BookingEntity> {
             e.printStackTrace();
             throw new BookingException("Error saving booking entity.");
         }
-        return bookingEntity;
+        return (List<BookingEntity>) bookingEntity;
     }
 
     @Override

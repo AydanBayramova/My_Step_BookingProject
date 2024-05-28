@@ -10,10 +10,11 @@ public class FlightInMemory implements Dao<FlightEntity> {
 
     private static final Set<FlightEntity> FLIGHT_ENTITY_SET = new HashSet<>();
 
+
     @Override
-    public FlightEntity saveAll(FlightEntity flightEntity) {
+    public List<FlightEntity> saveAll(FlightEntity flightEntity) {
         FLIGHT_ENTITY_SET.add(flightEntity);
-        return flightEntity;
+        return (List<FlightEntity>) flightEntity;
     }
 
     @Override

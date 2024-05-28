@@ -5,14 +5,15 @@ import stepProject.model.entity.BookingEntity;
 
 import java.util.*;
 
-public class DaoInMemory implements Dao<BookingEntity> {
+public class BookingDaoInMemory implements Dao<BookingEntity> {
 
     private static final Set<BookingEntity> BOOKING_ENTITY_SET = new HashSet<>();
 
+
     @Override
-    public BookingEntity saveAll(BookingEntity bookingEntity) {
+    public List<BookingEntity> saveAll(BookingEntity bookingEntity) {
         BOOKING_ENTITY_SET.add(bookingEntity);
-        return bookingEntity;
+        return (List<BookingEntity>) bookingEntity;
     }
 
     @Override

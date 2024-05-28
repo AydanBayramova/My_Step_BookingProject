@@ -1,10 +1,13 @@
 package stepProject.model.entity;
 
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class BookingEntity {
+public class BookingEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private Long bookingId;
     private String passengerName;
     private LocalDate bookingDate;
@@ -18,6 +21,7 @@ public class BookingEntity {
         this.flightNumber = flightNumber;
 
     }
+
 
     public Long getBookingId() {
         return bookingId;

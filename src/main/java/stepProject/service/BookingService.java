@@ -28,10 +28,11 @@ public class BookingService implements Service {
 
 
     @Override
-    public BookingEntity saveAll(BookingDto bookingDto) {
+    public List saveAll(Object o) {
+        BookingDto bookingDto = (BookingDto) o;
         if (bookingDto != null) {
             BookingEntity bookingEntity = maptoBookingEntity(bookingDto);
-            return bookingEntityDao.saveAll(bookingEntity);
+            return (List) bookingEntityDao.saveAll(bookingEntity);
         } else {
             return null;
         }
