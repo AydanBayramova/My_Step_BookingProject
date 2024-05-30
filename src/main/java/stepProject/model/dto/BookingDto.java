@@ -1,10 +1,11 @@
 package stepProject.model.dto;
-
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class BookingDto {
+public class BookingDto implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private Long bookingId;
     private String passengerName;
     private LocalDate bookingDate;
@@ -45,10 +46,10 @@ public class BookingDto {
     }
 
     public LocalDate getBookingDate() {
-        return bookingDate;
+        return this.bookingDate;
     }
 
-    public void setBookingDate(LocalDate bookingDate) {
+    public void setBookingDate(final LocalDate bookingDate) {
         this.bookingDate = bookingDate;
     }
 
