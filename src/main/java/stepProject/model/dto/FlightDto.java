@@ -1,9 +1,12 @@
 package stepProject.model.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class FlightDto {
+public class FlightDto  implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Long flightId;
     private String locations;
@@ -48,10 +51,10 @@ public class FlightDto {
     }
 
     public LocalDate getDepartureDate() {
-        return departureDate;
+        return this.departureDate;
     }
 
-    public void setDepartureDate(LocalDate departureDate) {
+    public void setDepartureDate(final LocalDate departureDate) {
         this.departureDate = departureDate;
     }
 
@@ -74,5 +77,16 @@ public class FlightDto {
     @Override
     public int hashCode() {
         return Objects.hash(flightId, locations, departureDate, freeSeats);
+    }
+
+    @Override
+    public String toString() {
+        return "FlightDto{" +
+                "flightId=" + flightId +
+                ", locations='" + locations + '\'' +
+                ", departureDate=" + departureDate +
+                ", freeSeats=" + freeSeats +
+                ", departureCity='" + departureCity + '\'' +
+                '}';
     }
 }
