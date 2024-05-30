@@ -2,10 +2,14 @@ package stepProject.controller;
 
 import stepProject.exception.BookingException;
 import stepProject.model.dto.BookingDto;
+import stepProject.model.dto.FlightDto;
 import stepProject.model.entity.BookingEntity;
+import stepProject.model.entity.FlightEntity;
 import stepProject.service.BookingService;
+import stepProject.service.FlightService;
 
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,27 +17,28 @@ public class BookingController {
 
     private final BookingService bookingService;
 
+    private final List<BookingEntity> addedBoogins;
+
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
+        this.addedBoogins = new ArrayList<>();
     }
 
-    public BookingDto addBooking(BookingDto bookingDto) {
-        if (bookingDto.getBookingId() > 0) {
-            BookingEntity bookingEntity = (BookingEntity) bookingService.saveAll(bookingDto);
-            return mapToDto(bookingEntity);
-        } else {
-            throw new BookingException("Booking id can't be empty");
-        }
+    public void addBookings(BookingDto bookingDto) {
+        BookingEntity bookingEntity = mapToEntity(bookingDto);
+        addedBoogins.add(bookingEntity);
+        bookingService.save(addedBoogins);
     }
 
-    private BookingDto mapToDto(BookingEntity bookingEntity) {
-        BookingDto bookingDto = new BookingDto();
-        bookingDto.setBookingId(bookingEntity.getBookingId());
-        bookingDto.setBookingDate(bookingEntity.getBookingDate());
-        bookingDto.setPassengerName(bookingEntity.getPassengerName());
-        bookingDto.setFlightNumber(bookingEntity.getFlightNumber());
-        return bookingDto;
+    private BookingEntity mapToEntity(BookingDto bookingDto) {
+        BookingEntity bookingEntity = new BookingEntity();
+        bookingEntity.setBookingId(bookingDto.getBookingId());
+        bookingEntity.setFlightNumber(bookingDto.getFlightNumber());
+        bookingEntity.setFlightNumber(bookingDto.getFlightNumber());
+        bookingEntity.setPassengerName(bookingDto.getPassengerName());
+        return bookingEntity;
     }
+
 
     public List<BookingEntity> getAll() {
         if (bookingService.getAll() != null) {
@@ -54,7 +59,7 @@ public class BookingController {
     }
 
     public boolean deleteById(Long id) {
-        if (bookingService.getById(id).isPresent()) {
+        if (id > 0) {
             return bookingService.deleteById(id);
         } else {
             return false;
