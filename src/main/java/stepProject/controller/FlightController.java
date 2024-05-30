@@ -7,32 +7,37 @@ import stepProject.model.entity.BookingEntity;
 import stepProject.model.entity.FlightEntity;
 import stepProject.service.FlightService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class FlightController {
+
     private final FlightService flightService;
+    private final List<FlightEntity> addedFlights;
 
     public FlightController(FlightService flightService) {
         this.flightService = flightService;
+        this.addedFlights = new ArrayList<>();
     }
 
-    public FlightDto addFlight(FlightDto flightDto) {
-        if (flightDto.getFlightId() > 0) {
-            FlightEntity flightEntity = (FlightEntity) flightService.saveAll(flightDto);
-            return mapToDto(flightEntity);
-        } else {
-            throw new BookingException("Booking id can't be empty");
-        }
+    public void addFlight(FlightDto flightDto) {
+
+        FlightEntity flightEntity = mapToEntity(flightDto);
+
+        addedFlights.add(flightEntity);
+
+        flightService.save(addedFlights);
     }
 
-    private FlightDto mapToDto(FlightEntity flightEntity) {
-        FlightDto flightDto = new FlightDto();
-        flightDto.setFlightId(flightDto.getFlightId());
-        flightDto.setLocations(flightDto.getLocations());
-        flightDto.setDepartureDate(flightDto.getDepartureDate());
-        flightDto.setFreeSeats(flightDto.getFreeSeats());
-        return flightDto;
+
+    private FlightEntity mapToEntity(FlightDto flightDto) {
+        FlightEntity flightEntity = new FlightEntity();
+        flightEntity.setFlightId(flightDto.getFlightId());
+        flightEntity.setDepartureDate(flightDto.getDepartureDate());
+        flightEntity.setLocations(flightDto.getLocations());
+        flightEntity.setDepartureCity(flightDto.getDepartureCity());
+        return flightEntity;
     }
 
     public List<FlightEntity> getAll() {
@@ -41,8 +46,6 @@ public class FlightController {
         } else {
             return null;
         }
-
-
     }
 
     public Optional<FlightEntity> getById(Long id) {
