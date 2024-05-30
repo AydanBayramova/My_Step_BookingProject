@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface Dao<T> {
 
-   List<T> saveAll(T t);
-   List<T> getAll();
+    void saveAll(List<T> t);
+  List<T> getAll();
    Optional<T> getById(Long id);
    boolean deleteById(Long id);
 }
