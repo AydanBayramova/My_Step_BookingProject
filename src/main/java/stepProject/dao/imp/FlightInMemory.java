@@ -1,9 +1,7 @@
 package stepProject.dao.imp;
-
 import stepProject.dao.Dao;
 import stepProject.model.entity.BookingEntity;
 import stepProject.model.entity.FlightEntity;
-
 import java.util.*;
 
 public class FlightInMemory implements Dao<FlightEntity> {
@@ -12,9 +10,8 @@ public class FlightInMemory implements Dao<FlightEntity> {
 
 
     @Override
-    public List<FlightEntity> saveAll(FlightEntity flightEntity) {
-        FLIGHT_ENTITY_SET.add(flightEntity);
-        return (List<FlightEntity>) flightEntity;
+    public void saveAll(List<FlightEntity> flightEntity) {
+        FLIGHT_ENTITY_SET.add((FlightEntity) flightEntity);
     }
 
     @Override
