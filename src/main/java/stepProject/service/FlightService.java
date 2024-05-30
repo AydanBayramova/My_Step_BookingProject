@@ -1,13 +1,8 @@
 package stepProject.service;
-
 import stepProject.dao.Dao;
 import stepProject.exception.BookingException;
-import stepProject.model.dto.BookingDto;
 import stepProject.model.dto.FlightDto;
-import stepProject.model.entity.BookingEntity;
 import stepProject.model.entity.FlightEntity;
-import stepProject.service.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -28,26 +23,24 @@ public class FlightService implements Service {
         return flightEntity;
     }
 
-
     @Override
-    public List saveAll(Object o) {
-        FlightDto flightDto = (FlightDto) o;
-        if (flightDto != null) {
-            FlightEntity flightEntity = maptoFlightEntity(flightDto);
-            return (List) flightEntityDao.saveAll(flightEntity);
+    public void save(List t) {
+        if (t != null) {
+            flightEntityDao.saveAll((List<FlightEntity>) t);
         } else {
-            return null;
+            System.out.println("errorororor");
         }
     }
 
     @Override
     public List getAll() {
         if (flightEntityDao.getAll() == null) {
-            throw new BookingException("No BookingEntity found");
+            throw new BookingException("No FlightEntity found");
         } else {
             return flightEntityDao.getAll();
         }
     }
+
 
     @Override
     public Optional getById(Long id) {
@@ -66,6 +59,7 @@ public class FlightService implements Service {
             return false;
         }
     }
+
     public void displayFlights(List<FlightEntity> flights) {
         if (flights.isEmpty()) {
             System.out.println("No flights from Kiev in the next 24 hours.");
@@ -78,5 +72,6 @@ public class FlightService implements Service {
             }
         }
     }
+
 }
 
