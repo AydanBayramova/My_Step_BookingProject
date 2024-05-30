@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface Service<T> {
 
-
-
-   List<T>  saveAll(T o);
+    void save(List<T> t);
 
     List<T> getAll();
+
     Optional<T> getById(Long id);
+
     boolean deleteById(Long id);
 }
