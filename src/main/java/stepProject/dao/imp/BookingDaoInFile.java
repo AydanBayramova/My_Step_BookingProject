@@ -1,9 +1,6 @@
 package stepProject.dao.imp;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import stepProject.dao.Dao;
-import stepProject.exception.BookingException;
 import stepProject.model.entity.BookingEntity;
 import stepProject.model.entity.FlightEntity;
 
@@ -15,74 +12,56 @@ import java.util.Optional;
 public class BookingDaoInFile implements Dao<BookingEntity> {
 
     private static final String RESOURCES_PATH = "src/main/resources/";
-    private static final String BOOKINGS_PATH = RESOURCES_PATH.concat("bookings.json");
-
-    private ObjectMapper objectMapper;
-
-    public BookingDaoInFile(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
+    private static final String BOOKINGS_PATH = RESOURCES_PATH.concat("bookings.ser");
 
     @Override
-    public List<BookingEntity> saveAll(BookingEntity bookingEntity) {
-        try (FileWriter fileWriter = new FileWriter(BOOKINGS_PATH, true);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            String bookingJson = objectMapper.writeValueAsString(bookingEntity);
-            printWriter.println(bookingJson);
+    public void saveAll(List<BookingEntity> bookingEntities) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(BOOKINGS_PATH);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(bookingEntities);
+            System.out.println("ok written");
         } catch (IOException e) {
             e.printStackTrace();
-            throw new BookingException("Error saving booking entity.");
         }
-        return (List<BookingEntity>) bookingEntity;
+
     }
 
     @Override
     public List<BookingEntity> getAll() {
-        List<BookingEntity> bookings = new ArrayList<>();
-        try (Reader reader = new FileReader(BOOKINGS_PATH)) {
-            bookings = objectMapper.readValue(reader, new TypeReference<List<BookingEntity>>() {});
-        } catch (IOException e) {
+        try (FileInputStream fileInputStream = new FileInputStream(BOOKINGS_PATH);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            Object o = objectInputStream.readObject();
+            return (List<BookingEntity>) o;
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            System.out.println("exception in getAll method flights");
+            return null;
         }
-        return bookings;
     }
-
 
     @Override
     public Optional<BookingEntity> getById(Long id) {
-        List<BookingEntity> bookings = getAll();
-        return bookings.stream()
-                .filter(bookingEntity -> id.equals(bookingEntity.getBookingId()))
-                .findFirst();
+        List<BookingEntity> bookingEntityList = getAll();
+        for (BookingEntity bookingEntity : bookingEntityList) {
+            if (bookingEntity.getBookingId().equals(id)) {
+                return Optional.of(bookingEntity);
+            }
+        }
+        return Optional.empty();
     }
 
+    @Override
     public boolean deleteById(Long id) {
-        List<BookingEntity> bookings = getAll();
-        Optional<BookingEntity> bookingToDelete = bookings.stream()
-                .filter(bookingEntity -> id.equals(bookingEntity.getBookingId()))
-                .findFirst();
-        if (bookingToDelete.isPresent()) {
-            bookings.remove(bookingToDelete.get());
-            saveAllToFile(bookings);
-            decreaseFreeSeats();
-            return true;
+        List<BookingEntity> bookingEntityList = getAll();
+        for (BookingEntity bookingEntity : bookingEntityList) {
+            if (bookingEntity.getBookingId().equals(id)) {
+                bookingEntityList.remove(bookingEntity);
+                saveAll(bookingEntityList);
+                return true;
+            }
         }
         return false;
     }
 
-    private void decreaseFreeSeats() {
-        FlightEntity.decreaseFreeSeats();
-    }
-
-
-    private void saveAllToFile(List<BookingEntity> bookings) {
-        try (Writer writer = new FileWriter(BOOKINGS_PATH)) {
-            objectMapper.writeValue(writer, bookings);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new BookingException("Error saving bookings to file.");
-        }
-    }
 }
+
