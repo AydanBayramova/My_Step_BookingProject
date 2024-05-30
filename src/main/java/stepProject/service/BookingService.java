@@ -1,10 +1,10 @@
 package stepProject.service;
-
 import stepProject.dao.Dao;
 import stepProject.exception.BookingException;
 import stepProject.model.dto.BookingDto;
+import stepProject.model.dto.FlightDto;
 import stepProject.model.entity.BookingEntity;
-
+import stepProject.model.entity.FlightEntity;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +28,11 @@ public class BookingService implements Service {
 
 
     @Override
-    public List saveAll(Object o) {
-        BookingDto bookingDto = (BookingDto) o;
-        if (bookingDto != null) {
-            BookingEntity bookingEntity = maptoBookingEntity(bookingDto);
-            return (List) bookingEntityDao.saveAll(bookingEntity);
+    public void save(List t) {
+        if (t != null) {
+            bookingEntityDao.saveAll((List<BookingEntity>) t);
         } else {
-            return null;
+            System.out.println("errorororor");
         }
     }
 
