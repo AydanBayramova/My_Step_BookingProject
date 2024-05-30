@@ -11,10 +11,10 @@ public class BookingDaoInMemory implements Dao<BookingEntity> {
 
 
     @Override
-    public List<BookingEntity> saveAll(BookingEntity bookingEntity) {
-        BOOKING_ENTITY_SET.add(bookingEntity);
-        return (List<BookingEntity>) bookingEntity;
+    public void saveAll(List<BookingEntity> bookingEntities) {
+        BOOKING_ENTITY_SET.addAll(bookingEntities);
     }
+
 
     @Override
     public List<BookingEntity> getAll() {
