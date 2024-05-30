@@ -2,6 +2,7 @@ package stepProject.model.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class FlightEntity implements Serializable {
@@ -78,8 +79,8 @@ public class FlightEntity implements Serializable {
         if (null == o || this.getClass() != o.getClass()) return false;
         final FlightEntity that = (FlightEntity) o;
         return Objects.equals(this.flightId, that.flightId) && Objects.equals(this.locations, that.locations) && Objects.equals(this.departureDate, that.departureDate);
-    }
 
+    }
     @Override
     public int hashCode() {
         return Objects.hash(this.flightId, this.locations, this.departureDate);
