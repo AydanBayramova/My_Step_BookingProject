@@ -128,7 +128,7 @@ public class ConsoleApp {
                     System.out.println("Booking failed.");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a number for Flight ID.");
+                System.out.println("Invalid input. Please enter a number for Flight ID:");
                 scanner.next();
             }
         }
