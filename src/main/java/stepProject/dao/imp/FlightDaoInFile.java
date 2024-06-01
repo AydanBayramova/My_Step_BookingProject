@@ -42,12 +42,9 @@ public class FlightDaoInFile implements Dao<FlightEntity> {
     @Override
     public Optional<FlightEntity> getById(Long id) {
         List<FlightEntity> flightEntities = getAll();
-        for (FlightEntity flightEntity : flightEntities) {
-            if (flightEntity.getFlightId().equals(id)) {
-                return Optional.of(flightEntity);
-            }
-        }
-        return Optional.empty();
+        return flightEntities.stream()
+                .filter(flightEntity -> flightEntity.getFlightId().equals(id))
+                .findFirst();
     }
 
     @Override
