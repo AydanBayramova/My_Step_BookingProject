@@ -3,13 +3,12 @@ package stepProject.dao;
 import stepProject.model.entity.BookingEntity;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class BookingDaoDB implements Dao<BookingEntity> {
 
     Connection connection = new DBconnection().getConnection();
+
 
     public void saveAll(List<BookingEntity> bookingEntities) {
         String bookingSql = "INSERT INTO bookings(flight_id) VALUES(?)";
@@ -27,24 +26,24 @@ public class BookingDaoDB implements Dao<BookingEntity> {
                 bookingPs.setLong(1, bookingEntity.getFlightNumber());
                 bookingPs.executeUpdate();
 
-
                 ResultSet bookingRs = bookingPs.getGeneratedKeys();
-                bookingRs.next();
-                long bookingId = bookingRs.getLong(1);
+                if (bookingRs.next()) {
+                    long bookingId = bookingRs.getLong(1);
 
+                    for (String passengerName : bookingEntity.getPassengerName()) {
+                        passengerPs.setString(1, passengerName);
+                        passengerPs.executeUpdate();
 
-                passengerPs.setString(1, bookingEntity.getPassengerName());
-                passengerPs.executeUpdate();
+                        ResultSet passengerRs = passengerPs.getGeneratedKeys();
+                        if (passengerRs.next()) {
+                            long passengerId = passengerRs.getLong(1);
 
-
-                ResultSet passengerRs = passengerPs.getGeneratedKeys();
-                passengerRs.next();
-                long passengerId = passengerRs.getLong(1);
-
-
-                bookingPassengerPs.setLong(1, bookingId);
-                bookingPassengerPs.setLong(2, passengerId);
-                bookingPassengerPs.executeUpdate();
+                            bookingPassengerPs.setLong(1, bookingId);
+                            bookingPassengerPs.setLong(2, passengerId);
+                            bookingPassengerPs.executeUpdate();
+                        }
+                    }
+                }
             }
 
             connection.commit();
@@ -67,8 +66,8 @@ public class BookingDaoDB implements Dao<BookingEntity> {
 
     @Override
     public List<BookingEntity> getAll() {
-        List<BookingEntity> bookingEntities = new ArrayList<>();
-        String sql = "SELECT b.id, b.flight_id, p.full_name " +
+        Map<Long, BookingEntity> bookingMap = new HashMap<>();
+        String sql = "SELECT b.id AS booking_id, b.flight_id, p.full_name " +
                 "FROM bookings b " +
                 "JOIN booking_passengers bp ON b.id = bp.booking_id " +
                 "JOIN passengers p ON bp.passenger_id = p.id";
@@ -76,45 +75,56 @@ public class BookingDaoDB implements Dao<BookingEntity> {
              ResultSet rs = statement.executeQuery(sql)) {
 
             while (rs.next()) {
-                BookingEntity bookingEntity = new BookingEntity();
-                bookingEntity.setBookingId(rs.getLong("id"));
-                bookingEntity.setFlightNumber(rs.getLong("flight_id"));
-                bookingEntity.setPassengerName(rs.getString("full_name"));
-                bookingEntities.add(bookingEntity);
+                long bookingId = rs.getLong("booking_id");
+                long flightNumber = rs.getLong("flight_id");
+                String passengerName = rs.getString("full_name");
+
+                BookingEntity bookingEntity = bookingMap.get(bookingId);
+                if (bookingEntity == null) {
+                    bookingEntity = new BookingEntity();
+                    bookingEntity.setBookingId(bookingId);
+                    bookingEntity.setFlightNumber(flightNumber);
+                    bookingEntity.setPassengerName(new ArrayList<>());
+                    bookingMap.put(bookingId, bookingEntity);
+                }
+                bookingEntity.getPassengerName().add(passengerName);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return bookingEntities;
+        return new ArrayList<>(bookingMap.values());
     }
-
 
     @Override
     public Optional<BookingEntity> getById(Long id) {
-        String bookingsql = "SELECT * FROM bookings WHERE id=?";
-        String passengerSql = "SELECT * FROM passengers WHERE id=?";
-        try (PreparedStatement booking_preparedStatement = connection.prepareStatement(bookingsql);
-             PreparedStatement passenger_preparedStatement = connection.prepareStatement(passengerSql)) {
-            passenger_preparedStatement.setLong(1, id);
-            ResultSet rsPassenger = passenger_preparedStatement.executeQuery();
-            booking_preparedStatement.setLong(1, id);
-            ResultSet rsBooking = booking_preparedStatement.executeQuery();
-            if (rsPassenger.next() && rsBooking.next()) {
-                BookingEntity bookingEntity = new BookingEntity();
-                bookingEntity.setBookingId(rsPassenger.getLong("id"));
-                bookingEntity.setFlightNumber(rsBooking.getLong("flight_id"));
-                bookingEntity.setPassengerName(rsPassenger.getString("full_name"));
-                return Optional.of(bookingEntity);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-
         return Optional.empty();
     }
+
+
+//    @Override
+//    public Optional<BookingEntity> getById(String passengerName) {
+//        String sql = "select bookings.id from passengers p " +
+//                "join bookings_passengers bp on p.id = bp.passenger_id " +
+//                "join bookings b on bp.booking_id=b.id where p.full_name=?";
+//        // where full_name = ?
+//
+//        try(PreparedStatement ps = connection.prepareStatement(sql);
+//        ResultSet rs = ps.executeQuery()){
+//            ps.setString(1, passengerName);
+//            List<Long> listOfBookingIds = new ArrayList<>();
+//            while (rs.next()) {
+//                listOfBookingIds.add( rs.getLong("id"));
+//            }
+//
+//
+//
+//
+//        } catch (SQLException e){
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     @Override
     public boolean deleteById(Long id) {

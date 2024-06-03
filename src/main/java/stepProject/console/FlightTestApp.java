@@ -23,7 +23,7 @@ public class FlightTestApp {
         flightController.addFlight(new FlightDto(3L, "Baku6", LocalDate.of(2024, 7, 2), 1L, "Kiyev"));
         flightController.addFlight(new FlightDto(4L, "Baku9", LocalDate.of(2024, 8, 2), 1L, "Kiyev"));
  //       System.out.println(flightController.getAll());
-   System.out.println(flightController.deleteById(2L));
+  // System.out.println(flightController.deleteById(2L));
    //      System.out.println(flightController.getById(3L));
 
 

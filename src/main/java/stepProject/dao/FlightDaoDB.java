@@ -27,7 +27,7 @@ public class FlightDaoDB implements Dao<FlightEntity> {
                 ps.setString(1, flightEntity.getLocations());
                 ps.setString(2, flightEntity.getDepartureCity());
                 ps.setTimestamp(3, departureTimestamp);
-                ps.setLong(4, flightEntity.getFreeSeats());
+               ps.setInt(4,flightEntity.getFREE_SEATS());
 
 
             }
@@ -59,7 +59,7 @@ public class FlightDaoDB implements Dao<FlightEntity> {
                     flightEntity.setDepartureDate(departureDateTime.toLocalDate());
                 }
 
-                flightEntity.setFreeSeats(resultSet.getLong("free_seats"));
+                flightEntity.setFREE_SEATS(resultSet.getInt("free_seats"));
 
                 flights.add(flightEntity);
             }

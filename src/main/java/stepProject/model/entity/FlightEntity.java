@@ -7,20 +7,19 @@ import java.util.Objects;
 
 public class FlightEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private  final long serialVersionUID = 1L;
 
-    private Long flightId;
+    private  Long flightId;
     private String locations;
     private LocalDate departureDate;
-    private static long FREE_SEATS = 0;
+    private  int FREE_SEATS;
     private String departureCity;
 
-    public FlightEntity(Long flightId, String locations, LocalDate departureDate,String departureCity) {
-        this.flightId = ++FREE_SEATS;
+    public FlightEntity( String locations,  LocalDate departureDate,  int FREE_SEATS,  String departureCity) {
         this.locations = locations;
         this.departureDate = departureDate;
+        this.FREE_SEATS = FREE_SEATS;
         this.departureCity = departureCity;
-
     }
 
     public FlightEntity() {
@@ -28,6 +27,14 @@ public class FlightEntity implements Serializable {
 
     public String getDepartureCity() {
         return this.departureCity;
+    }
+
+    public int getFREE_SEATS() {
+        return this.FREE_SEATS;
+    }
+
+    public void setFREE_SEATS(final int FREE_SEATS) {
+        this.FREE_SEATS = FREE_SEATS;
     }
 
     public void setDepartureCity(final String departureCity) {
@@ -50,19 +57,7 @@ public class FlightEntity implements Serializable {
         this.locations = locations;
     }
 
-    public static long getFreeSeats() {
-        return FREE_SEATS;
-    }
 
-    public static void setFreeSeats(long freeSeats) {
-        FREE_SEATS = freeSeats;
-    }
-
-    public static void decreaseFreeSeats() {
-        if (FREE_SEATS > 0) {
-            FREE_SEATS--;
-        }
-    }
 
     public LocalDate getDepartureDate() {
         return departureDate;

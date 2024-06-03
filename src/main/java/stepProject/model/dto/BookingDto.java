@@ -1,17 +1,18 @@
 package stepProject.model.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class BookingDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Long bookingId;
-    private String passengerName;
+    private List<String> passengerName;
     private LocalDate bookingDate;
     private Long flightNumber;
 
-    public BookingDto(Long bookingId, String passengerName, LocalDate bookingDate, Long flightNumber) {
+    public BookingDto(final Long bookingId, final List<String> passengerName, final LocalDate bookingDate, final Long flightNumber) {
         this.bookingId = bookingId;
         this.passengerName = passengerName;
         this.bookingDate = bookingDate;
@@ -37,11 +38,11 @@ public class BookingDto implements Serializable {
         this.bookingId = bookingId;
     }
 
-    public String getPassengerName() {
-        return passengerName;
+    public List<String> getPassengerName() {
+        return this.passengerName;
     }
 
-    public void setPassengerName(String passengerName) {
+    public void setPassengerName(final List<String> passengerName) {
         this.passengerName = passengerName;
     }
 
@@ -70,7 +71,7 @@ public class BookingDto implements Serializable {
     public String toString() {
         return "BookingDto{" +
                 "bookingId=" + bookingId +
-                ", passengerName='" + passengerName + '\'' +
+                ", passengerName=" + passengerName +
                 ", bookingDate=" + bookingDate +
                 ", flightNumber=" + flightNumber +
                 '}';
